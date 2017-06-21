@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/luobotang/mock-middleware.git"
   },
-  "author": "",
+  "author": "luobotang",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/luobotang/mock-middleware/issues"
