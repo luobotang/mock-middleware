@@ -1,0 +1,28 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+body, select {
+	font: 14px/20px sans-serif;
+}
+.config-item {
+	display: flex;
+	align-items: center;
+	padding: 5px 20px;
+	border-bottom: 1px solid #ddd;
+}
+.config-item .desc {
+	flex: 1 1 auto;
+}
+.config-item select {
+	flex: 0 0 150px;
+	height: 30px;
+	border: 1px solid #ddd;
+}
+.config-item:nth-child(even) {
+	background: #fafafa;
+}
+
+[v-cloak] {
+	display: none;
+}

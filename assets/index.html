@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>MOCK CONFIG</title>
+	<link rel="icon" href="config.ico">
+	<link rel="stylesheet" href="config.css">
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div v-if="configs">
+			<div v-for="(config, key) in configs" class="config-item">
+				<div class="desc">{{config.desc}}</div>
+				<select :value="config.value" @input="postConfig(key, $event.target.value)">
+					<option v-for="opt in config.options" :value="opt.value">{{opt.desc}}</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<script src="vue.min.js"></script>
+	<script src="config.js"></script>
+</body>
+</html>

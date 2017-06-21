@@ -1,0 +1,25 @@
+{
+  "name": "mock-middleware",
+  "version": "0.1.0",
+  "description": "为 FTL 页面和 Ajax 提供 mock 数据。配合（freemarker-middleware）使用。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines" : {
+    "node" : ">=6.9.4"
+  },
+  "peerDependencies": {
+    "express": "^4.15.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luobotang/mock-middleware.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luobotang/mock-middleware/issues"
+  },
+  "homepage": "https://github.com/luobotang/mock-middleware#readme"
+}
