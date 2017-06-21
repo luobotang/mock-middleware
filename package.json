@@ -1,5 +1,5 @@
 {
-  "name": "mock-middleware",
+  "name": "luobo-mock-middleware",
   "version": "0.1.0",
   "description": "为 FTL 页面和 Ajax 提供 mock 数据。配合（freemarker-middleware）使用。",
   "main": "index.js",
