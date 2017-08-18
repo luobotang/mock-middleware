@@ -12,10 +12,10 @@ body, select {
 	border-bottom: 1px solid #ddd;
 }
 .config-item .desc {
-	flex: 1 1 auto;
+	flex: 1 1 100px;
 }
 .config-item select {
-	flex: 0 0 150px;
+	flex: 2 1 150px;
 	height: 30px;
 	border: 1px solid #ddd;
 }
