@@ -1,4 +1,5 @@
 exports.ajax = {
 	'/getName': './getName',
-	'/getAge': './getAge'
+	'/getAge': './getAge',
+	'/postName': './postName'
 }
