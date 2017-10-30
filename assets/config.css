@@ -3,7 +3,14 @@
 	padding: 0;
 }
 body, select {
+	color: #333;
 	font: 14px/20px sans-serif;
+}
+.config-type-title {
+	padding: 5px 10px;
+	font-weight: bold;
+	background: #ddd;
+	border-bottom: 1px solid #ccc;
 }
 .config-item {
 	display: flex;
@@ -21,6 +28,16 @@ body, select {
 }
 .config-item:nth-child(even) {
 	background: #fafafa;
+}
+
+@media (min-width: 800px) {
+	.config-list {
+		display: flex;
+		align-items: top;
+	}
+	.config-item {
+		width: 400px;
+	}
 }
 
 [v-cloak] {

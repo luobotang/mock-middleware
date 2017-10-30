@@ -10,12 +10,15 @@
 </head>
 <body>
 	<div id="app" v-cloak>
-		<div v-if="configs">
-			<div v-for="(config, key) in configs" class="config-item">
-				<div class="desc">{{config.desc}}</div>
-				<select :value="config.value" @input="postConfig(key, $event.target.value)">
-					<option v-for="opt in config.options" :value="opt.value">{{opt.desc}}</option>
-				</select>
+		<div v-for="type in configTypes" :key="type.type" class="config-type">
+			<div class="config-type-title" @click="activeType = type.type">{{type.type}}</div>
+			<div v-if="type.type == activeType" class="config-list">
+				<div v-for="config in type.configs" class="config-item" :key="config.key">
+					<div class="desc">{{config.desc}}</div>
+					<select :value="config.value" @input="postConfig(config.key, $event.target.value)">
+						<option v-for="opt in config.options" :value="opt.value">{{opt.desc}}</option>
+					</select>
+				</div>
 			</div>
 		</div>
 	</div>
