@@ -33,7 +33,7 @@ body, select {
 @media (min-width: 800px) {
 	.config-list {
 		display: flex;
-		align-items: top;
+		flex-wrap: wrap;
 	}
 	.config-item {
 		width: 400px;
