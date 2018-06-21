@@ -29,6 +29,6 @@ module.exports = {
 	Test2: {
 		desc: '测试2',
 		type: '测试',
-		options: [{value: 'test', desc: 'test'}]
+		options: {test1: '测试1', test2: '测试2'}
 	}
 }

@@ -11,12 +11,17 @@
 <body>
 	<div id="app" v-cloak>
 		<div v-for="type in configTypes" :key="type.type" class="config-type">
-			<div class="config-type-title" @click="activeType = type.type">{{type.type}}</div>
+			<div class="config-type-title" @click="activeType = type.type">{{ type.type }}</div>
 			<div v-if="type.type == activeType" class="config-list">
 				<div v-for="config in type.configs" class="config-item" :key="config.key">
-					<div class="desc">{{config.desc}}</div>
-					<select :value="config.value" @input="postConfig(config.key, $event.target.value)">
-						<option v-for="opt in config.options" :value="opt.value">{{opt.desc}}</option>
+					<div class="desc">{{ config.desc }}</div>
+					<!-- 数组形式的配置项 -->
+					<select v-if="Array.isArray(config.options)" :value="config.value" @input="postConfig(config.key, $event.target.value)">
+						<option v-for="opt in config.options" :value="opt.value">{{ opt.desc }}</option>
+					</select>
+					<!-- Map 形式的配置项 -->
+					<select v-else :value="config.value" @input="postConfig(config.key, $event.target.value)">
+						<option v-for="(desc, value) in config.options" :value="value">{{ desc }}</option>
 					</select>
 				</div>
 			</div>
