@@ -1,3 +1,3 @@
 module.exports = (req, res, next) => {
-  res.json({key: 'value'})
+  res.json(req.$mock.getUserInfo())
 }

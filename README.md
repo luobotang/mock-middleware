@@ -189,6 +189,10 @@ app.use(MockMiddleware())
 
 ## 更新记录
 
+- v0.3.1
+
+  - 支持自定义 mock plugins，在 mock 模块中通过 req.$mock 引用注入的插件方法/属性
+
 - v0.3.0
 
   - 支持通过请求地址匹配的 mock 模块，并拥有更大的自由度
