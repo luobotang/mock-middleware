@@ -140,7 +140,8 @@ module.exports = (req, res, next) => {
 - v1.0.0
 
   - 支持不提供 config.js、map.js 配置文件
-  - 修改 map.js 结构和使用方式，不区分 page 和 ajax，mock 模块返回函数时，统一采用 `(req, res, next) => {}` 形式
+  - 修改 map.js 结构和使用方式，不区分 page 和 ajax
+  - 修改 mock 模块返回函数时的调用逻辑，统一以 `(req, res, next) => {}` 形式进行调用
 
 - v0.3.1
 
