@@ -1,18 +1,18 @@
-module.exports = (req, callback) => {
+module.exports = (req, res) => {
 	if (req.method === 'POST') {
 		getReqData(req, (e, data) => {
 			if (e) {
-				callback({
+				res.json({
 					error: e
 				})
 			} else {
-				callback({
+				res.json({
 					data: data
 				})
 			}
 		})
 	} else {
-		callback({
+		res.json({
 			error: '只能通过 POST 方法调用！'
 		})
 	}

@@ -1,5 +1,5 @@
-exports.ajax = {
-	'/getName': './getName',
+module.exports = {
+	'/getName': 'getName',
 	'/getAge': './getAge',
 	'/postName': './postName'
 }

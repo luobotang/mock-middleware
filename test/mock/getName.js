@@ -1,3 +1,3 @@
-module.exports = (req) => {
-	return req.$config.Name
+module.exports = (req, res) => {
+	res.json(req.$config.Name)
 }

@@ -1,193 +1,146 @@
 # mock-middleware
 
-为 FTL 页面和 Ajax 提供 mock 数据。配合 [freemarker-middleware](https://github.com/luobotang/freemarker-middleware) 使用。
+mock-middleware 是支持动态“场景切换”的 mock 中间件。
 
-## 介绍
+## mock 中间件
 
-采用 Freemarker 后端模板的工程，前端进行本地开发时 mock 数据非常麻烦。通过使用 [freemarker-middleware](https://github.com/luobotang/freemarker-middleware)，解决了前端本地渲染 *.ftl 模板文件的问题。对于模板渲染时的数据，freemarker-middleware 预留了通过 req.$data 提供数据的方式，而 mock-middleware 则提供了一套注入 req.$data 的机制，也就是向 Freemarker 模板提供 mock 数据。
-
-请求进入 express，首先经由 mock-middleware 的处理，添加 req.$data，然后转到 freemarker-middleware，此时即可将数据用于渲染模板。
-
-### map.js 配置文件
-
-为识别不同 ftl 文件以提供不同的 mock 数据，首先需要提供一个 map.js 文件，提供了 ftl 路径和数据提供模块的地址，例如：
+作为基于 Express 的 mock 中间件，mock-middleware 可以和 webpack-dev-middleware、webpack-hot-middleware 等一起组建本地开发服务器，mock-middleware 提供接口本地 mock 服务，例如：
 
 ```javascript
-exports.page = {
-  '/about.ftl': './about'
+const express = require('expresss')
+const compiler = webpack(require('./webpack.config'))
+
+const app = express()
+app.use(require('luobo-mock-middleware')())
+app.use(require('webpack-dev-middleware')(compiler))
+app.use(require('webpack-hot-middleware')(compiler))
+
+app.listen('80')
+```
+
+然后就可以在项目的 mock 目录下，根据接口地址来配置 mock 模块。
+
+例如，接口 `/common/userInfo` 对应的模块为 `mock/common/userInfo`：
+
+```javascript
+// mock/common/userInfo.js
+module.exports = (req, res, next) => {
+  res.json({userName: 'luobotang', type: 'developer'})
 }
 ```
 
-### mock 数据模块文件
+这样在本地服务启动后，请求接口 `/common/userInfo` 后，mock-middleware 会调用上面的模块并执行，最终请求返回配置的 JSON 数据。
 
-数据提供模块文件，可以是 JSON 文件直接提供数据，也可以是 JS 模块以函数方式同步或异步返回数据。
+如果 mock 模块进行了修改，也无需重新启动本地服务，mock-middleware 在启动后会监听 mock 目录下的文件变动，模块修改后会清除对应模块缓存。
 
-（1）JSON 方式返回数据
+## 动态“场景切换”
 
-文件 about.json
+还是上面的 `/common/userInfo` 接口，在特定场景下，需要返回不同的数据（例如管理员用户数据），以验证前端页面的展示逻辑，可以手动修改 mock 模块内容：
 
-```json
-{
-  "name": "luobo",
-  "age": 18
+```javascript
+// mock/common/userInfo.js
+module.exports = (req, res, next) => {
+  res.json({userName: 'huanggua', type: 'admin'})
 }
 ```
 
-（2）同步函数方式返回数据
+这样做的坏处是，每次都要手动修改 mock 模块文件内容，比较麻烦，而且这些常用的“场景”没有记录下来，其他开发者也需要手动修改。
 
-文件 about.js
-
-```javascript
-module.exports = function(req) {
-  return {
-    name: 'luobo',
-    age: 18
-  }
-}
-```
-
-（3）异步函数方式返回数据
-
-文件 about.js
+mock-middleware 支持在 mock 目录下创建 `config.js` 文件，根据需要进行配置，例如：
 
 ```javascript
-module.exports = function(req, callback) {
-  callback({
-    name: 'luobo',
-    age: 18
-  })
-}
-```
-
-### AJAX mock
-
-对于 AJAX 接口，不需要将数据交由模板进行渲染，直接以 JSON 形式返回，此时在 map.js 增加 ajax 配置：
-
-```javascript
-exports.page = {
-  '/about.ftl': './about'
-}
-
-exports.ajax = {
-  '/getName': './getName'
-}
-```
-
-对于的数据模块文件的形式，和之前相同。
-
-### mock 数据方案
-
-有时，对于同一个数据接口，要根据情况返回不同的数据以模拟不同的场景。可以将多个数据写到一个数据模块文件中，然后根据一定的条件返回不同数据。
-
-为了更好满足这种需求，提供了 mock 数据方案，这个数据方案可以在运行时进行切换，以为相同接口返回不同数据。
-
-首先，提供 config.js 配置文件：
-
-```javascript
+// mock/config.js
 module.exports = {
-  Name: {
-    desc: '姓名',
-    options: [{
-      value: 'Tom',
-      desc: 'Tom'
-    }, {
-      value: 'Luobo',
-      desc: 'Luobo'
-    }]
+  UserType: {
+    desc: '用户类型',
+    options: {Normal: '普通用户', Admin: '管理员'}
   }
 }
 ```
 
-数据方案 Name 在数据模块中可以通过 req.$config.Name 来获取到，方案的值为上面选项中的一个，缺省为第一个。
-
-启动 express 后，可以在“/mock-config”页面对当前方案的值进行配置。
-
-以数据模块“getName”为例，可以这样来根据数据方案切换返回数据：
+这样，在 mock 模块中可以根据这里的配置项分别返回不同数据：
 
 ```javascript
-module.exports = function(req) {
-  return {
-    name: req.$config.Name
+// mock/common/userInfo.js
+module.exports = (req, res, next) => {
+  if (req.$config.UserType === 'Admin') {
+    res.json({userName: 'huanggua', type: 'admin'})
+  } else {
+    res.json({userName: 'luobotang', type: 'developer'})
   }
 }
 ```
 
-由于是在运行时修改数据，不需要修改数据模块文件，可以更方便地模拟不同场景。
+可以通过 `/mock-config/` 页面动态切换用户类型：
 
-## 使用
+![示例 mock-config](demo-mock-config.png)
 
-在项目下创建 mock 目录，包括：
+通过这种方式，可以将各种场景预先配置到项目中，在页面调试时动态切换。
 
-```
-- mock/
-  - map.js
-  - config.js
-  - ajax/
-  - page/
-```
+## 更多特性
 
-文件 ```map.js``` 记录页面、接口到对应数据文件的映射，例如：
+- 自定义mock模块路径
 
-```javascript
-module.exports = {
-  page: {
-    '/page/one': './page/one',
-    '/page/two': './page/two'
-  },
-  ajax: {
-    '/api/foo': './ajax/foo',
-    '/api/bar': './ajax/bar'
+  可以通过 `mock/map.js` 配置接口对应 mock 模块。
+  
+  例如：
+
+  ```javascript
+  // mock/map.js
+  module.exports = {
+    '/foo': 'bar'
   }
-}
-```
+  ```
 
-文件 ```config.js``` 描述 mock 可用配置，以便接口数据可以根据配置进行切换不同类型，例如：
+  不在 map.js 中配置的接口，按路径进行匹配查找。
 
-```javascript
-module.exports = {
-  IndexPage: {
-    desc: '首页数据',
-    options: [
-      {value: 'Normal', desc: '正常'},
-      {value: 'Error', desc: '数据异常'}
-    ]
+- 自定义辅助方法
+
+  可以通过 `mock/plugins.js` 配置工具方法等，提供给 mock 模块使用。
+
+  例如：
+
+  ```javascript
+  // mock/plugins.js
+  module.exports = (mock) => {
+    mock.success = (data) => {
+      return {
+        code: '0000',
+        data,
+        result: 'success'
+      }
+    }
+    mock.fail = (code = '9999') => {
+      return {
+        code,
+        result: 'fail'
+      }
+    }
   }
-}
-```
+  ```
 
-数据文件模块返回数据，可以直接返回数据，也可以提供一个函数，例如：
+  在 mock 模块中通过 `req.$mock` 引用辅助方法：
 
-```javascript
-module.exports = function (req) {
-  switch (req.$config.IndexPage) {
-    case 'Error':
-      return {errorMessage: '数据异常'}
-    default:
-      return {data: {message: 'Hello, world!'}}
+  ```javascript
+  module.exports = (req, res, next) => {
+    if (req.query.userId) {
+      res.json(req.$mock.success({userId: req.query.userId}))
+    } else {
+      res.json(req.$mock.fail('4001'))
+    }
   }
-}
-```
+  ```
 
-注：这里的 req.$config 来源于 mock 配置的结果。
+- 同步更新模块
 
-## 使用
-
-在开发服务配置中，加入：
-
-```javascript
-var MockMiddleware = require('mock-middleware')
-var express = require('express')
-
-var app = express()
-app.use(MockMiddleware())
-// ...
-```
-
-## 配置
-
-开发服务器启动后，可以访问 ```/mock-config/``` 页面对 mock 进行配置，配置结果可以应用到 mock 数据模块（通过 req.$config）。
+  mock 目录下的所有文件，包括 mock 模块以及 config.js、map.js、plugins.js 配置文件，变更后都会及时同步，无需重启开发服务器。
 
 ## 更新记录
+
+- v1.0.0
+
+  - 支持不提供 config.js、map.js 配置文件
+  - 修改 map.js 结构和使用方式，不区分 page 和 ajax，mock 模块返回函数时，统一采用 `(req, res, next) => {}` 形式
 
 - v0.3.1
 
