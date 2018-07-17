@@ -9,24 +9,28 @@
 	<link rel="stylesheet" href="config.css">
 </head>
 <body>
-	<div id="app" v-cloak>
-		<div v-for="type in configTypes" :key="type.type" class="config-type">
-			<div class="config-type-title" @click="activeType = type.type">{{ type.type }}</div>
-			<div v-if="type.type == activeType" class="config-list">
-				<div v-for="config in type.configs" class="config-item" :key="config.key">
-					<div class="desc">{{ config.desc }}</div>
-					<!-- 数组形式的配置项 -->
-					<select v-if="Array.isArray(config.options)" :value="config.value" @input="postConfig(config.key, $event.target.value)">
-						<option v-for="opt in config.options" :value="opt.value">{{ opt.desc }}</option>
-					</select>
-					<!-- Map 形式的配置项 -->
-					<select v-else :value="config.value" @input="postConfig(config.key, $event.target.value)">
-						<option v-for="(desc, value) in config.options" :value="value">{{ desc }}</option>
-					</select>
-				</div>
-			</div>
+	<div id="app" class="app-container" v-cloak>
+		<div class="config-group-list">
+			<div
+				v-for="group in config_groups"
+				:key="group.type"
+				class="config-group-item"
+				:class="{'config-group-item--active': group.type === active_type}"
+				@click="active_type = group.type"
+				>{{ group.type }}</div>
+		</div>
+		<div class="active-group-configs" v-if="active_group">
+			<config-item v-for="config in active_group.configs" :config="config" :key="config.key" @change="onConfigChange" />
 		</div>
 	</div>
+	<script type="text/vue-template" id="config-item">
+		<div class="config-item">
+			<div class="desc">{{ config.desc }}</div>
+			<select :value="config.value" @input="onInput($event.target.value)">
+				<option v-for="opt in opt_list" :value="opt.value" :key="opt.value">{{ opt.desc }}</option>
+			</select>
+		</div>
+	</script>
 	<script src="vue.min.js"></script>
 	<script src="config.js"></script>
 </body>

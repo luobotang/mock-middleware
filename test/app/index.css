@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#action {
+  margin: 20px;
+  padding: 10px 20px;
+  font: 16px/1 sans-serif;
+}
+
+#output {
+  display: block;
+  margin-left: 20px;
+  padding: 20px;
+  min-width: 600px;
+  height: 400px;
+  font: 14px/1.5 monospace;
+  box-sizing: border-box;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

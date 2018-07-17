@@ -1,34 +1,11 @@
 module.exports = {
-	Name: {
-		desc: '姓名',
-		type: '基本数据',
-		options: [{
-			value: 'Tom',
-			desc: 'Tom'
-		}, {
-			value: 'Luobo',
-			desc: 'Luobo'
-		}]
+	UserType: {
+    desc: '用户类型',
+    options: {Normal: '普通用户', Admin: '管理员'}
 	},
-	Age: {
-		desc: '年龄',
-		type: '基本数据',
-		options: [{
-			value: 'Old',
-			desc: '大于30岁'
-		}, {
-			value: 'Young',
-			desc: '小于30岁'
-		}]
-	},
-	Test1: {
-		desc: '测试1',
-		type: '测试',
-		options: [{value: 'test', desc: 'test'}]
-	},
-	Test2: {
-		desc: '测试2',
-		type: '测试',
-		options: {test1: '测试1', test2: '测试2'}
+	GetUserInfo: {
+		type: '接口',
+		desc: '获取用户信息',
+		options: {Normal: '正常', Fail: '异常'}
 	}
 }
