@@ -137,6 +137,11 @@ module.exports = (req, res, next) => {
 
 ## 更新记录
 
+- v1.0.1
+
+  - 修复bug
+  - 更新 mock-config 页面样式
+
 - v1.0.0
 
   - 支持不提供 config.js、map.js 配置文件
