@@ -139,7 +139,7 @@ module.exports = (req, res, next) => {
 
 - v1.1.0
 
-  - 支持基于账号的状态切换，账号切换：</mock-config/user.html>
+  - 支持基于账号的状态切换，账号切换地址：```/mock-config/user.html```
 
 - v1.0.1
 
