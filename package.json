@@ -1,7 +1,7 @@
 {
   "name": "luobo-mock-middleware",
-  "version": "1.0.2",
-  "description": "为 FTL 页面和 Ajax 提供 mock 数据。配合（freemarker-middleware）使用。",
+  "version": "1.1.0",
+  "description": "支持动态“场景切换”的 mock 中间件",
   "main": "index.js",
   "scripts": {
     "test": "node test/server.js"
@@ -24,5 +24,6 @@
   "homepage": "https://github.com/luobotang/mock-middleware#readme",
   "devDependencies": {
     "express": "^4.15.4"
-  }
+  },
+  "dependencies": {}
 }

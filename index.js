@@ -2,16 +2,18 @@ const fs = require('fs')
 const path = require('path')
 const util = require('./lib/util')
 const ConfigMiddleware = require('./lib/ConfigMiddleware')
+const UserConfigMiddleware = require('./lib/UserConfigMiddleware')
 const DataMiddleware = require('./lib/DataMiddleware')
 
 class Mock {
-  constructor(root) {
+  constructor(root, options) {
     root = this.$root = root || path.join(process.cwd(), 'mock')
+    options = this.options = options || {}
     // 监听根目录下文件变更，从而在 mock 模块修改后清除原有模块缓存
     // 使得新的请求到来时，可以使用新的 mock 模块进行处理
     // 由于通过监听方式进行统一处理，DataMiddleware 可以不处理模块缓存问题
     watchMockRoot(root)
-    this.configMiddleware = new ConfigMiddleware(root)
+    this.configMiddleware = new UserConfigMiddleware(root)
     this.dataMiddleware = new DataMiddleware(root, {
       // 在调用mock模块前，向 req.$mock 注入辅助方法，以便于 mock 模块使用
       before_invoke_mock_module: (req) => {
@@ -69,14 +71,15 @@ function clearModuleCacheLater(modulepath) {
   }, 100)
 }
 
-exports = module.exports = function(root) {
-  const mockInstance = new Mock(root)
+exports = module.exports = function(root, options) {
+  const mockInstance = new Mock(root, options)
 	return function(req, res, next) {
     mockInstance.handleRequest(req, res, next)
 	}
 }
 
 exports.ConfigMiddleware = ConfigMiddleware
+exports.UserConfigMiddleware = UserConfigMiddleware
 exports.DataMiddleware = DataMiddleware
 exports.requireNoCache = util.requireNoCache
 exports.getRequestBody = util.getRequestBody
